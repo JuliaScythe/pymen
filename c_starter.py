@@ -8,6 +8,7 @@
 #                                                       #
 #########################################################
 import curses
+import importlib
 
 myscreen = curses.initscr()
 curses.noecho()
@@ -36,16 +37,16 @@ good = 7
 
 # CONFIG
 title = "Jake's Artificial Intelligence programs!"
-menu = {1: ["Program Name", "foo.py", nope],
+menu = {1: ["Program Name", "foo", nope],
         2: ["FOOBAR INC Conflobulator", "conflob.py", unst]}
 
 # WRITERS
 def addC(str, x, b=0):
-    myscreen.addstr(x, (curses.COLS - len(str)) / 2, str, b,)
+    myscreen.addstr(x, int((curses.COLS - len(str)) / 2), str, b,)
     myscreen.refresh()
 
 def addLC(str, x, yos, b=0):
-    myscreen.addstr(x, (curses.COLS - yos) / 2, str, b)
+    myscreen.addstr(x, int((curses.COLS - yos) / 2), str, b)
     myscreen.refresh()
 
 # MAIN SCREEN
@@ -64,9 +65,10 @@ addLC("READY TO RUN", curses.LINES - 2, -40, curses.color_pair(good))           
 for x in menu:
     addLC(str(x) + ":", 2 * x + 2, 50, curses.A_UNDERLINE + curses.color_pair(menu[x][2]))              #
     addLC(menu[x][0] + ":", 2 * x + 2, 34, curses.color_pair(menu[x][2]))          #  TWEAK THESE NUMBERS DEPENDING ON YOUR DATA
-    addLC(menu[x][1], 2 * x + 2, -20, curses.color_pair(menu[x][2]))               #
+    addLC(menu[x][1] + ".py", 2 * x + 2, -20, curses.color_pair(menu[x][2]))               #
 addC("Please select a program by typing the number", 2 * x + 4, curses.A_BOLD)
 
-prog = myscreen.getch()
-
+prog = int(myscreen.getkey())
+importlib.import_module(menu[prog][1])
+myscreen.getch()
 curses.endwin()
